@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    container_name : mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass123
+    volumes:
+      - ./data/mongo/001_usuarios.js:/docker-entrypoint-initdb.d/001_usuarios.js:ro
+      - ./data/mongo/002_initialdata.js:/docker-entrypoint-initdb.d/002_initialdata.js:ro
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    container_name : mongo-express
+    links:
+      - mongo
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pass123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:pass123@mongo:27017/
+      ME_CONFIG_MONGODB_SERVER: mongo
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name : rabbitmq
+    ports:
+      - "5672:5672" #JMS Port
+      - "15672:15672" #Management Port
+      #usuario=guest
+      #senha=guest
