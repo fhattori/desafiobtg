@@ -20,7 +20,7 @@ import com.btgpactual.desafio.dados.PedidoResumo;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest
-public class DadosApplicationTests {
+public class MongodbApplicationTests {
 
     @Autowired
     PedidoRepository pedidoRepo;
@@ -37,7 +37,7 @@ public class DadosApplicationTests {
     	novopedido.addItem(new Item("capacitor de fluxo",1,100000));
     	pedidoRepo.save(novopedido);
     	Cliente novocliente = new Cliente("3", "Fábrica de Deloreans");
-    	novocliente.addPedido(new PedidoResumo(novopedido.getId(), novopedido.getPrecoTotal()));
+    	novocliente.addPedido(new PedidoResumo(novopedido.getId(), PedidoCalc.getPrecoTotal(novopedido)));
     	clienteRepo.save(novocliente);
     }
     
@@ -66,18 +66,18 @@ public class DadosApplicationTests {
     @Test
     public void conferirTotalPedido() {
     	Pedido pedido35 = pedidoRepo.findPedidoById("35");
-        assertEquals("O total do novo pedido deveria 350000", 350000, pedido35.getPrecoTotal(),this.ERRO_ACEITAVEL);
+        assertEquals("O total do novo pedido deveria 350000", 350000, PedidoCalc.getPrecoTotal(pedido35),this.ERRO_ACEITAVEL);
     }
     
     @Test
     public void conferirInfoCliente() {
     	Cliente cliente3 = clienteRepo.findClienteById("3");
-    	assertEquals("O novo cliente deveria ter 1 pedido", 1, cliente3.getQuantidadePedidos());
+    	assertEquals("O novo cliente deveria ter 1 pedido", 1, ClienteCalc.getQuantidadePedidos(cliente3));
     }
     
     @Test
     public void conferirTotalCliente() {
     	Cliente cliente3 = clienteRepo.findClienteById("3");
-        assertEquals("O total do novo pedido deveria 350000", 350000, cliente3.getValorTotalPedidos(),this.ERRO_ACEITAVEL);
+        assertEquals("O total do novo pedido deveria 350000", 350000, ClienteCalc.getValorTotalPedidos(cliente3),this.ERRO_ACEITAVEL);
     }
 }

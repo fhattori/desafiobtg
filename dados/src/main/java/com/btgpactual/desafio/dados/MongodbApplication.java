@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
-@EnableMongoRepositories
-public class DadosApplication implements CommandLineRunner{
+//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+//@EnableMongoRepositories
+public class MongodbApplication implements CommandLineRunner{
     
     @Autowired
     PedidoRepository pedidoRepo;
@@ -20,15 +20,15 @@ public class DadosApplication implements CommandLineRunner{
     ClienteRepository clienteRepo;
     
     public static void main(String[] args) {
-        SpringApplication.run(DadosApplication.class, args);
+        SpringApplication.run(MongodbApplication.class, args);
     }
     
     public String printClienteDetails(Cliente cliente) {
         System.out.println(
         "Cliente id: " + cliente.getId() + 
         ", \nNomeCliente: " + cliente.getNomeCliente() +
-        ", \nQuantidadePedidos: " + cliente.getQuantidadePedidos() +
-        ", \nValorTotalPedidos: " + cliente.getValorTotalPedidos()
+        ", \nQuantidadePedidos: " + ClienteCalc.getQuantidadePedidos(cliente) +
+        ", \nValorTotalPedidos: " + ClienteCalc.getValorTotalPedidos(cliente)
         );
         
         return "";
