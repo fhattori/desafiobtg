@@ -1,31 +1,32 @@
 package com.btgpactual.desafio.dados;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("clientes")
 public class PedidoResumo {
-
-	private String id;
+	
+	private String codigoPedido;
 	private double precoDoPedido;
 	
 	public PedidoResumo() {
 		super();
-		this.id = null;
+		this.codigoPedido = null;
 		this.precoDoPedido = 0.0;
 	}
 
-	public PedidoResumo(String id, double precoDoPedido) {
+	public PedidoResumo(String codigoPedido, double precoDoPedido) {
 		super();
-		this.id = id;
+		this.codigoPedido = codigoPedido;
 		this.precoDoPedido = precoDoPedido;
 	}
 		
-	public String getId() {
-		return id;
+	public String getCodigoPedido() {
+		return codigoPedido;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setCodigoPedido(String codigoPedido) {
+		this.codigoPedido = codigoPedido;
 	}
 
 	public double getPrecoTotal() {

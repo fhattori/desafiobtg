@@ -11,7 +11,6 @@ public class Cliente {
 
 	@Id
 	private String id;
-
 	private String nomeCliente;
 	private List<PedidoResumo> pedidos;
 	

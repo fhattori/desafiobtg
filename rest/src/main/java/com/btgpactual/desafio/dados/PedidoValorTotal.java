@@ -3,33 +3,30 @@ package com.btgpactual.desafio.dados;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+public class PedidoValorTotal{
 
-@Document("pedidos")
-public class Pedido {
-
-	@Id
 	private String id;
-	@Field
+
 	private String codigoCliente;
 	private List<Item> itens;
+	private double valorTotal;
 	
-	public Pedido(){
+	public PedidoValorTotal(){
 		super();
 		this.id = null;
 		this.codigoCliente = null;
 		this.setItens(new ArrayList<Item>());
+		this.setValorTotal(0.0);
 	}
 
-	public Pedido(String id, String codigoCliente) {
+	public PedidoValorTotal(Pedido pedido) {
 		super();
-		this.id = id;
-		this.codigoCliente = codigoCliente;
-		this.setItens(new ArrayList<Item>());
+		this.id = pedido.getId();
+		this.codigoCliente = pedido.getCodigoCliente();
+		this.itens = pedido.getItens();
+		this.setValorTotal(PedidoCalc.getPrecoTotal(pedido));
 	}
-
+	
 	public String getId() {
 		return id;
 	}
@@ -52,9 +49,19 @@ public class Pedido {
 
 	public void setItens(List<Item> itens) {
 		this.itens = itens;
+		this.setValorTotal(PedidoCalc.getPrecoTotal(this.getItens()));
 	}
-	
+
 	public void addItem(Item item){
 		this.itens.add(item);
+		this.setValorTotal(PedidoCalc.getPrecoTotal(this.getItens()));
+	}
+
+	public double getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(double valorTotal) {
+		this.valorTotal = valorTotal;
 	}
 }

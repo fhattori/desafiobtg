@@ -17,9 +17,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class BrokerConfigurer {
 	
 	public static final String ADD_PEDIDO_MESSAGE_QUEUE = "add-pedido";
-    public static final String GET_PEDIDO_MESSAGE_QUEUE = "get-pedido";    
+    public static final String GET_PEDIDO_MESSAGE_QUEUE = "get-pedido";
+    public static final String DELETE_PEDIDO_MESSAGE_QUEUE = "delete-pedido";
     public static final String ADD_CLIENTE_MESSAGE_QUEUE = "add-cliente";
     public static final String GET_CLIENTE_MESSAGE_QUEUE = "get-cliente";
+    public static final String DELETE_CLIENTE_MESSAGE_QUEUE = "delete-cliente";
     public static final String REPLY_MESSAGE_QUEUE = "reply-queue";
     public static final String BTG_EXCHANGE = "btg-exchange";
     
@@ -32,6 +34,11 @@ public class BrokerConfigurer {
     @Bean
     Queue getPedidoQueue() {
         return new Queue(GET_PEDIDO_MESSAGE_QUEUE);
+    }
+    
+    @Bean
+    Queue deletePedidoQueue() {
+        return new Queue(DELETE_PEDIDO_MESSAGE_QUEUE);
     }
     
     @Bean
@@ -54,6 +61,11 @@ public class BrokerConfigurer {
     Queue getClienteQueue() {
         return new Queue(GET_CLIENTE_MESSAGE_QUEUE);
     }
+    
+    @Bean
+    Queue deleteClienteQueue() {
+        return new Queue(DELETE_CLIENTE_MESSAGE_QUEUE);
+    }
         
     //Binding queues to exchange
     @Bean
@@ -68,6 +80,13 @@ public class BrokerConfigurer {
         return BindingBuilder.bind(getPedidoQueue())
                 .to(topicExchange())
                 .with(GET_PEDIDO_MESSAGE_QUEUE);
+    }
+    
+    @Bean
+    Binding deletePedidoBinding() {
+        return BindingBuilder.bind(deletePedidoQueue())
+                .to(topicExchange())
+                .with(DELETE_PEDIDO_MESSAGE_QUEUE);
     }
     
     @Bean
@@ -89,6 +108,13 @@ public class BrokerConfigurer {
         return BindingBuilder.bind(getClienteQueue())
                 .to(topicExchange())
                 .with(GET_CLIENTE_MESSAGE_QUEUE);
+    }
+    
+    @Bean
+    Binding deleteClienteBinding() {
+        return BindingBuilder.bind(deleteClienteQueue())
+                .to(topicExchange())
+                .with(DELETE_CLIENTE_MESSAGE_QUEUE);
     }
     
     //Setup ObjectMapper    

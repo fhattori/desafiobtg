@@ -51,6 +51,18 @@ public class MessageProducer {
 			e.printStackTrace();
 		}
 	}
+	
+	public void deletePedido(String id) {
+		Message newMessage = MessageBuilder.withBody(id.getBytes()).build();
+		rabbitTemplate.setReplyTimeout(100000);
+		rabbitTemplate.send(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.DELETE_PEDIDO_MESSAGE_QUEUE, newMessage);
+	}
+	
+	public void deleteCliente(String id) {
+		Message newMessage = MessageBuilder.withBody(id.getBytes()).build();
+		rabbitTemplate.setReplyTimeout(100000);
+		rabbitTemplate.send(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.DELETE_CLIENTE_MESSAGE_QUEUE, newMessage);
+	}
 
 	public Pedido getPedido(String id) {
 		Pedido response = null;

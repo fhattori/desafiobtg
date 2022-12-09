@@ -17,8 +17,8 @@ import com.btgpactual.desafio.dados.Item;
 import com.btgpactual.desafio.dados.Pedido;
 import com.btgpactual.desafio.producer.MessageProducer;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
-@EnableRabbit
+//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+//@EnableRabbit
 public class TestingRestApplication implements CommandLineRunner{
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestingRestApplication.class);
 	

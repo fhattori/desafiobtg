@@ -47,6 +47,12 @@ public class MessageConsumer {
 			e.printStackTrace();
 		}
 	}
+	
+	@RabbitListener(queues = BrokerConfigurer.DELETE_PEDIDO_MESSAGE_QUEUE)
+	public void deletePedido(Message message) {
+		String descrPedido = new String(message.getBody());
+		pedidoRepo.deleteById(descrPedido);
+	}
 
 	@RabbitListener(queues = BrokerConfigurer.GET_PEDIDO_MESSAGE_QUEUE)
 	public void getPedido(Message message) throws JsonProcessingException{
@@ -80,6 +86,12 @@ public class MessageConsumer {
 		}
 	}
 	
+	@RabbitListener(queues = BrokerConfigurer.DELETE_CLIENTE_MESSAGE_QUEUE)
+	public void deleteCliente(Message message) {
+		String descrCliente = new String(message.getBody());
+		clienteRepo.deleteById(descrCliente);
+	}
+	
 	@RabbitListener(queues = BrokerConfigurer.GET_CLIENTE_MESSAGE_QUEUE)
 	public void getCliente(Message message) throws JsonProcessingException{
 		String descrCliente = new String(message.getBody());
@@ -92,6 +104,11 @@ public class MessageConsumer {
 			//Se a requisição for para um pedido específico
 			Cliente cliente = clienteRepo.findClienteById(descrCliente);
 			if (cliente != null) {
+				LOGGER.info("----------------------------------------------------------------");
+				LOGGER.info(String.valueOf(cliente.getPedidos().size()));
+				LOGGER.info(String.valueOf(cliente.getPedidos().get(0).getCodigoPedido()));
+				LOGGER.info(String.valueOf(cliente.getPedidos().get(1).getCodigoPedido()));
+				LOGGER.info("----------------------------------------------------------------");
 				build = MessageBuilder.withBody(objectMapper.writeValueAsBytes(cliente)).build();
 			}
 		}
