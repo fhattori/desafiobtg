@@ -1,24 +1,18 @@
 package com.btgpactual.desafio.dados;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.btgpactual.desafio.dados.Cliente;
-import com.btgpactual.desafio.dados.ClienteRepository;
-import com.btgpactual.desafio.dados.Item;
-import com.btgpactual.desafio.dados.Pedido;
-import com.btgpactual.desafio.dados.PedidoRepository;
-import com.btgpactual.desafio.dados.PedidoResumo;
-
 @RunWith(SpringRunner.class)
+@TestInstance(Lifecycle.PER_CLASS)
 @DataMongoTest
 public class MongodbApplicationTests {
 
@@ -30,7 +24,7 @@ public class MongodbApplicationTests {
     
     double ERRO_ACEITAVEL=0.1;
 
-    @Before
+    @BeforeAll
     public void setUp() throws Exception {
     	Pedido novopedido = new Pedido("35", "3");
     	novopedido.addItem(new Item("volante",10,25000));
@@ -41,7 +35,7 @@ public class MongodbApplicationTests {
     	clienteRepo.save(novocliente);
     }
     
-    @After
+    @AfterAll
     public void cleanUp() {
     	pedidoRepo.deleteById("35");
     	clienteRepo.deleteById("3");
@@ -49,35 +43,35 @@ public class MongodbApplicationTests {
 
     @Test
     public void pedidoDeveSerInserido() {
-        assertFalse("O novo pedido deveria ser encontrado",pedidoRepo.findAll().isEmpty());
+        Assertions.assertFalse(pedidoRepo.findAll().isEmpty(),"O novo pedido deveria ser encontrado");
     }
     
     @Test
     public void clienteDeveSerInserido() {
-    	assertFalse("O novo cliente deveria ser encontrado",clienteRepo.findAll().isEmpty());
+    	Assertions.assertFalse(clienteRepo.findAll().isEmpty(),"O novo cliente deveria ser encontrado");
     }
     
     @Test
     public void conferirInfoPedido() {
     	Pedido pedido35 = pedidoRepo.findPedidoById("35");
-        assertEquals("O novo pedido deveria ter 2 itens", 2, pedido35.getItens().size());
+    	Assertions.assertEquals(pedido35.getItens().size(), 2, "O novo pedido deveria ter 2 itens");
     }
     
     @Test
     public void conferirTotalPedido() {
     	Pedido pedido35 = pedidoRepo.findPedidoById("35");
-        assertEquals("O total do novo pedido deveria 350000", 350000, PedidoCalc.getPrecoTotal(pedido35),this.ERRO_ACEITAVEL);
+    	Assertions.assertEquals(this.ERRO_ACEITAVEL, 350000, PedidoCalc.getPrecoTotal(pedido35),"O total do novo pedido deveria 350000");
     }
     
     @Test
     public void conferirInfoCliente() {
     	Cliente cliente3 = clienteRepo.findClienteById("3");
-    	assertEquals("O novo cliente deveria ter 1 pedido", 1, ClienteCalc.getQuantidadePedidos(cliente3));
+    	Assertions.assertEquals(ClienteCalc.getQuantidadePedidos(cliente3), 1, "O novo cliente deveria ter 1 pedido");
     }
     
     @Test
     public void conferirTotalCliente() {
     	Cliente cliente3 = clienteRepo.findClienteById("3");
-        assertEquals("O total do novo pedido deveria 350000", 350000, ClienteCalc.getValorTotalPedidos(cliente3),this.ERRO_ACEITAVEL);
+    	Assertions.assertEquals(this.ERRO_ACEITAVEL, 350000, ClienteCalc.getValorTotalPedidos(cliente3),"O total do novo pedido deveria 350000");
     }
 }
