@@ -32,7 +32,6 @@ public class MessageProducer {
 		try {
 			byte[] pedidobyte = objectMapper.writeValueAsBytes(pedido);
 			Message message = MessageBuilder.withBody(pedidobyte).build();
-			rabbitTemplate.setReplyTimeout(100000);
 			rabbitTemplate.send(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.ADD_PEDIDO_MESSAGE_QUEUE, message);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -44,7 +43,6 @@ public class MessageProducer {
 		try {
 			byte[] clientebyte = objectMapper.writeValueAsBytes(cliente);
 			Message message = MessageBuilder.withBody(clientebyte).build();
-			rabbitTemplate.setReplyTimeout(100000);
 			rabbitTemplate.send(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.ADD_CLIENTE_MESSAGE_QUEUE, message);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -54,13 +52,11 @@ public class MessageProducer {
 	
 	public void deletePedido(String id) {
 		Message newMessage = MessageBuilder.withBody(id.getBytes()).build();
-		rabbitTemplate.setReplyTimeout(100000);
 		rabbitTemplate.send(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.DELETE_PEDIDO_MESSAGE_QUEUE, newMessage);
 	}
 	
 	public void deleteCliente(String id) {
 		Message newMessage = MessageBuilder.withBody(id.getBytes()).build();
-		rabbitTemplate.setReplyTimeout(100000);
 		rabbitTemplate.send(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.DELETE_CLIENTE_MESSAGE_QUEUE, newMessage);
 	}
 
@@ -68,7 +64,6 @@ public class MessageProducer {
 		Pedido response = null;
 		try {
 			Message newMessage = MessageBuilder.withBody(id.getBytes()).build();
-			rabbitTemplate.setReplyTimeout(100000);
 			Message result = rabbitTemplate.sendAndReceive(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.GET_PEDIDO_MESSAGE_QUEUE, newMessage);
 			if (result != null) {
 				// message correlationId
@@ -91,7 +86,6 @@ public class MessageProducer {
 		List<Pedido> response = null;
 		try {
 			Message newMessage = MessageBuilder.withBody("all".getBytes()).build();
-			rabbitTemplate.setReplyTimeout(100000);
 			Message result = rabbitTemplate.sendAndReceive(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.GET_PEDIDO_MESSAGE_QUEUE, newMessage);
 			if (result != null) {
 				// message correlationId
@@ -114,7 +108,6 @@ public class MessageProducer {
 		Cliente response = null;
 		try {
 			Message newMessage = MessageBuilder.withBody(id.getBytes()).build();
-			rabbitTemplate.setReplyTimeout(100000);
 			Message result = rabbitTemplate.sendAndReceive(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.GET_CLIENTE_MESSAGE_QUEUE, newMessage);
 			if (result != null) {
 				// message correlationId
@@ -137,7 +130,6 @@ public class MessageProducer {
 		List<Cliente> response = null;
 		try {
 			Message newMessage = MessageBuilder.withBody("all".getBytes()).build();
-			rabbitTemplate.setReplyTimeout(100000);
 			Message result = rabbitTemplate.sendAndReceive(BrokerConfigurer.BTG_EXCHANGE, BrokerConfigurer.GET_CLIENTE_MESSAGE_QUEUE, newMessage);
 			if (result != null) {
 				// message correlationId

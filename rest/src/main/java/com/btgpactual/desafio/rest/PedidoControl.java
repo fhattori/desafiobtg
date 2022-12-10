@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.btgpactual.desafio.dados.Cliente;
 import com.btgpactual.desafio.dados.Pedido;
+import com.btgpactual.desafio.dados.PedidoCalc;
+import com.btgpactual.desafio.dados.PedidoResumo;
 import com.btgpactual.desafio.dados.PedidoValorTotal;
 import com.btgpactual.desafio.producer.MessageProducer;
 

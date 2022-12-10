@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 import com.btgpactual.desafio.dados.Cliente;
 import com.btgpactual.desafio.dados.ClienteRepository;
 import com.btgpactual.desafio.dados.Pedido;
+import com.btgpactual.desafio.dados.PedidoCalc;
 import com.btgpactual.desafio.dados.PedidoRepository;
+import com.btgpactual.desafio.dados.PedidoResumo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,7 +35,7 @@ public class MessageConsumer {
 	private ObjectMapper objectMapper = null;
 
 	@Autowired
-	RabbitTemplate rabbitTemplate;
+	private RabbitTemplate rabbitTemplate;
 
 	@RabbitListener(queues = BrokerConfigurer.ADD_PEDIDO_MESSAGE_QUEUE)
 	public void addPedido(Message message) {
@@ -42,6 +44,12 @@ public class MessageConsumer {
 		try {
 			pedidoNovo = objectMapper.readValue(descrPedido, Pedido.class);
 			pedidoRepo.save(pedidoNovo);
+			Cliente cliente = clienteRepo.findClienteById(pedidoNovo.getCodigoCliente());
+			if(cliente == null) {
+				cliente = new Cliente(pedidoNovo.getCodigoCliente(), null);
+			}
+			cliente.addPedido(new PedidoResumo(pedidoNovo.getId(),PedidoCalc.getPrecoTotal(pedidoNovo)));
+			clienteRepo.save(cliente);
 		} catch (Exception e) {
 			System.err.println("Pedido não pôde ser salvo.");
 			e.printStackTrace();
@@ -51,6 +59,14 @@ public class MessageConsumer {
 	@RabbitListener(queues = BrokerConfigurer.DELETE_PEDIDO_MESSAGE_QUEUE)
 	public void deletePedido(Message message) {
 		String descrPedido = new String(message.getBody());
+		Pedido deletado = pedidoRepo.findPedidoById(descrPedido);
+		if(deletado!=null) {
+			Cliente cliente = clienteRepo.findClienteById(deletado.getCodigoCliente());
+			if(cliente != null) {
+				cliente.rmPedido(descrPedido);
+				clienteRepo.save(cliente);
+			}
+		}
 		pedidoRepo.deleteById(descrPedido);
 	}
 
@@ -104,11 +120,6 @@ public class MessageConsumer {
 			//Se a requisição for para um pedido específico
 			Cliente cliente = clienteRepo.findClienteById(descrCliente);
 			if (cliente != null) {
-				LOGGER.info("----------------------------------------------------------------");
-				LOGGER.info(String.valueOf(cliente.getPedidos().size()));
-				LOGGER.info(String.valueOf(cliente.getPedidos().get(0).getCodigoPedido()));
-				LOGGER.info(String.valueOf(cliente.getPedidos().get(1).getCodigoPedido()));
-				LOGGER.info("----------------------------------------------------------------");
 				build = MessageBuilder.withBody(objectMapper.writeValueAsBytes(cliente)).build();
 			}
 		}

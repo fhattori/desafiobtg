@@ -5,6 +5,7 @@ services:
     image: mongo
     restart: always
     container_name : mongo
+    hostname: mongo
     ports:
       - 27017:27017
     environment:
@@ -31,8 +32,52 @@ services:
   rabbitmq:
     image: rabbitmq:management
     container_name : rabbitmq
+    hostname: rabbitmq
     ports:
       - "5672:5672" #JMS Port
       - "15672:15672" #Management Port
       #usuario=guest
       #senha=guest
+
+  servico-dados:
+    image: fhattori/desafiobtg-dados:0.2
+    container_name : desafiobtg-dados
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATA_MONGODB=mongo
+    depends_on:
+      - rabbitmq
+      - mongo
+    links:
+      - mongo
+      - rabbitmq
+    ports:
+      - 8880:8880
+
+  servico-rest:
+    image: fhattori/desafiobtg-rest:0.3
+    container_name : desafiobtg-rest
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATA_MONGODB=mongo
+    depends_on:
+      - rabbitmq
+      - mongo
+      - servico-dados
+    links:
+      - mongo
+      - rabbitmq
+    ports:
+      - 8080:8080

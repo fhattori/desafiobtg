@@ -56,4 +56,14 @@ public class Cliente {
 	public void addPedido(PedidoResumo pedido) {
 		this.pedidos.add(pedido);
 	}
+
+	public void rmPedido(String id) {
+		List<PedidoResumo> new_pedidos = new ArrayList<PedidoResumo>();
+		for (PedidoResumo pedido: this.pedidos) {
+			if(!pedido.getCodigoPedido().equals(id)) {
+				new_pedidos.add(pedido);
+			}
+		}
+		this.pedidos = new_pedidos;
+	}
 }
